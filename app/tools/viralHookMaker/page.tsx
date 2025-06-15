@@ -1,66 +1,73 @@
-'use client'
-
+"use client"
 import { useState } from "react"
-import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export default function ViralHookMaker() {
   const [topic, setTopic] = useState("")
   const [hooks, setHooks] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
 
-  const generateHooks = () => {
-    // Simulate AI-generated Nigerian viral hooks
-    setHooks([
-      `“You won’t believe what happened during ${topic} in Lagos!”`,
-      `“This ${topic}-inspired skit is breaking the internet 🔥”`,
-      `“Nigerians react to ${topic} — wait till the end 😳”`,
-    ])
+  const handleGenerate = async () => {
+    setLoading(true)
+    setHooks([])
+
+    // Simulate AI call delay
+    setTimeout(() => {
+      setHooks([
+        `🔥 "${topic}" wey go burst your head`,
+        `💡 Why everyone dey talk about "${topic}"`,
+        `🤣 Nigerians no go believe this about "${topic}"`
+      ])
+      setLoading(false)
+    }, 2000)
+  }
+
+  const handleSend = (tool: string) => {
+    alert(`✅ Sent to ${tool}!`)
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white px-4 py-8">
-      <Card className="w-full max-w-xl p-6 space-y-6 shadow-md">
-        <div className="text-2xl font-bold flex items-center gap-2">
-          <span>🎯</span> <span>Viral Hook Maker</span>
-        </div>
+    <div className="max-w-xl mx-auto space-y-6">
+      <h1 className="text-2xl font-bold">🎯 Viral Hook Maker</h1>
 
-        <Input
-          placeholder="Enter a trending topic (e.g. election, iPhone, Buhari)"
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-        />
+      <Input
+        placeholder="Enter a trending topic"
+        value={topic}
+        onChange={(e) => setTopic(e.target.value)}
+      />
 
-        <Button onClick={generateHooks} className="w-full bg-green-700 hover:bg-green-800 text-white">
-          Generate
-        </Button>
+      <Button onClick={handleGenerate} disabled={!topic || loading}>
+        {loading ? "Generating..." : "Generate"}
+      </Button>
 
-        {hooks.length > 0 && (
-          <div className="space-y-4">
-            <div className="font-semibold">Generated Hooks:</div>
-            {hooks.map((hook, index) => (
-              <Card key={index} className="p-4 bg-gray-100 shadow-sm">
-                <p>{hook}</p>
+      {loading && <p className="text-sm text-muted">🔄 Thinking like a Naija genius…</p>}
 
-                <div className="mt-3 flex gap-3">
-                  <Button variant="outline" size="sm">Send to SkitFusion</Button>
-                  <Button variant="outline" size="sm">Send to Meme2Ad</Button>
-                </div>
-              </Card>
-            ))}
+      {hooks.length > 0 && (
+        <Card className="p-4 space-y-2">
+          {hooks.map((hook, idx) => (
+            <p key={idx}>👉 {hook}</p>
+          ))}
+          <div className="flex gap-2 pt-2">
+            <Button variant="outline" onClick={() => handleSend("SkitFusion")}>
+              Send to SkitFusion
+            </Button>
+            <Button variant="outline" onClick={() => handleSend("Meme2Ad")}>
+              Send to Meme2Ad
+            </Button>
           </div>
-        )}
+        </Card>
+      )}
 
-        <div className="pt-6">
-          <div className="text-sm text-gray-600 mb-2">Sample Nigerian Hashtags:</div>
-          <div className="flex flex-wrap gap-2">
-            {["#NaijaTrending", "#SkitTok", "#FunnyNigeria", "#ViralGist", "#BantsNation"].map((tag, index) => (
-              <Badge key={index}>{tag}</Badge>
-            ))}
-          </div>
-        </div>
-      </Card>
+      <div className="space-x-2 pt-4">
+        <Badge>#NaijaTrending</Badge>
+        <Badge>#SkitTok</Badge>
+        <Badge>#FunnyNigeria</Badge>
+        <Badge>#ViralGist</Badge>
+        <Badge>#BantsNation</Badge>
+      </div>
     </div>
   )
 }
